@@ -1,0 +1,74 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: gdrive
+      POSTGRES_USER: gdrive
+      POSTGRES_PASSWORD: gdrive
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gdrive -d gdrive"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  # ponytail: SeaweedFS stands in for MinIO (whose free images were pulled from
+  # Docker Hub / quay / dl.min.io in 2025-2026). Same S3 API — swap back by
+  # changing this service and S3_ENDPOINT/S3_PUBLIC_ENDPOINT only.
+  seaweed:
+    image: chrislusf/seaweedfs:latest
+    command: >
+      server -dir=/data -ip=0.0.0.0 -master.volumeSizeLimitMB=1024 -volume.max=0
+             -s3 -s3.port=8333 -s3.config=/etc/seaweedfs/s3.json
+    volumes:
+      - ./seaweedfs/s3.json:/etc/seaweedfs/s3.json:ro
+      - seaweeddata:/data
+    ports:
+      - "9000:8333"   # S3 API — browser hits this directly for presigned PUT/GET
+    healthcheck:
+      test: ["CMD", "sh", "-c", "wget -q -O- http://localhost:9333/cluster/status >/dev/null 2>&1 || exit 1"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  web:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgres://gdrive:gdrive@postgres:5432/gdrive
+      DJANGO_SECRET_KEY: dev-secret-change-me
+      DJANGO_DEBUG: "0"
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,web
+      DJANGO_CSRF_TRUSTED_ORIGINS: http://localhost:8080,http://127.0.0.1:8080,http://localhost:5173
+      S3_ENDPOINT: http://seaweed:8333
+      S3_PUBLIC_ENDPOINT: http://localhost:9000
+      S3_BUCKET: gdrive
+      S3_ACCESS_KEY: gdrive
+      S3_SECRET_KEY: gdrive-secret
+    depends_on:
+      postgres:
+        condition: service_healthy
+      seaweed:
+        condition: service_healthy
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py ensure_bucket &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 2"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('localhost', 8000), 2)"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    expose:
+      - "8000"
+
+  nginx:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - web
+
+volumes:
+  pgdata:
+  seaweeddata:

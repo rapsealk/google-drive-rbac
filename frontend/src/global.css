@@ -1,0 +1,129 @@
+@import '@astryxdesign/core/reset.css';
+@import '@astryxdesign/core/astryx.css';
+
+:root {
+  --border: #e2e2e6;
+  --bg: #f7f7f9;
+  --text: #1a1a1f;
+  --muted: #6b6b76;
+  --accent: #2563eb;
+  --danger: #dc2626;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --border: #2e2e36;
+    --bg: #17171c;
+    --text: #ececf1;
+    --muted: #9a9aa4;
+    --accent: #3b82f6;
+    --danger: #f87171;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+}
+
+.layout { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar a, .sidebar .ws-item {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 6px;
+  color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+}
+.sidebar a:hover, .sidebar .ws-item:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.sidebar a.active { background: color-mix(in srgb, var(--accent) 18%, transparent); font-weight: 600; }
+.sidebar .section { margin: 12px 8px 4px; font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: .05em; }
+
+.main { flex: 1; padding: 24px 32px; max-width: 960px; }
+
+.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 12px; flex-wrap: wrap; }
+
+button, .btn {
+  font: inherit;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+}
+button:hover { border-color: var(--accent); color: var(--accent); }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.primary:hover { filter: brightness(1.1); color: #fff; }
+button.danger { color: var(--danger); border-color: var(--danger); background: transparent; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+
+input, select {
+  font: inherit;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+}
+input:focus, select:focus, button:focus-visible { outline: 2px solid color-mix(in srgb, var(--accent) 50%, transparent); outline-offset: 1px; }
+
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); }
+th { font-size: 12px; text-transform: uppercase; color: var(--muted); letter-spacing: .04em; }
+tr:hover td { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+
+.file-row { display: flex; align-items: center; gap: 10px; padding: 8px 6px; border-bottom: 1px solid var(--border); cursor: pointer; }
+.file-row:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.file-row .name { flex: 1; }
+.file-row .size { color: var(--muted); font-size: 12px; }
+.file-row button { padding: 2px 10px; font-size: 12px; }
+
+.breadcrumb { display: flex; gap: 6px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+.breadcrumb a { color: var(--accent); text-decoration: none; cursor: pointer; }
+
+.dialog-backdrop {
+  position: fixed; inset: 0; background: rgb(0 0 0 / 45%);
+  display: flex; align-items: center; justify-content: center; z-index: 50;
+}
+.dialog {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 20px; width: min(440px, calc(100vw - 32px));
+  box-shadow: 0 20px 60px rgb(0 0 0 / 25%);
+}
+.dialog h3 { margin: 0 0 14px; }
+
+.auth-card { max-width: 380px; margin: 12vh auto; padding: 28px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); }
+.auth-card h1 { font-size: 20px; margin: 0 0 6px; }
+.auth-card .sub { color: var(--muted); margin-bottom: 18px; }
+.auth-card form { display: flex; flex-direction: column; gap: 10px; }
+.error { color: var(--danger); font-size: 13px; min-height: 18px; }
+.tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.tabs button { flex: 1; }
+.tabs button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.invite-code {
+  font-family: ui-monospace, monospace; background: color-mix(in srgb, var(--accent) 10%, transparent);
+  padding: 2px 8px; border-radius: 4px; cursor: pointer;
+}
+
+.muted { color: var(--muted); }
+.spacer { flex: 1; }
+.row { display: flex; gap: 8px; align-items: center; }
+.stack { display: flex; flex-direction: column; gap: 10px; }

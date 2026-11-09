@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.coverage
+db.sqlite3
+
+# Node
+node_modules/
+dist/
+.pnpm-store/
+playwright-report/
+test-results/
+
+# Env / editors
+.env
+.DS_Store
+.idea/
+.vscode/

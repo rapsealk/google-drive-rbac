@@ -1,0 +1,11 @@
+{
+  "identities": [
+    {
+      "name": "gdrive",
+      "credentials": [
+        { "accessKey": "gdrive", "secretKey": "gdrive-secret" }
+      ],
+      "actions": ["Admin", "Read", "Write", "List", "Tagging"]
+    }
+  ]
+}
